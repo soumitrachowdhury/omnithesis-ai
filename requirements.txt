@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+groq
+tenacity
+requests
+arxiv
+python-dotenv
+crewai
+litellm
