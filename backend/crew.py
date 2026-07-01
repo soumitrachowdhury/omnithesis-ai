@@ -1,4 +1,5 @@
 import time
+from typing import Callable, Optional
 
 from crewai import Crew, Process, Task
 
@@ -27,7 +28,21 @@ def _run_single_step(agent, description: str, expected_output: str):
     return crew.kickoff()
 
 
-def run_omnithesis_crew(topic: str, background: str = ""):
+def _emit_progress(
+    progress_callback: Optional[Callable[[str, str, str], None]],
+    stage: str,
+    state: str,
+    message: str,
+):
+    if progress_callback:
+        progress_callback(stage, state, message)
+
+
+def run_omnithesis_crew(
+    topic: str,
+    background: str = "",
+    progress_callback: Optional[Callable[[str, str, str], None]] = None,
+):
     research_scout = create_research_scout()
     domain_analyst = create_domain_analyst()
     paper_curator = create_paper_curator()
@@ -35,6 +50,7 @@ def run_omnithesis_crew(topic: str, background: str = ""):
     report_writer = create_report_writer()
     editor = create_editor()
 
+    _emit_progress(progress_callback, "research", "running", "Searching ArXiv and Semantic Scholar...")
     research_description = (
         f"Search real academic papers for the topic '{topic}'. Use ArXiv and Semantic Scholar as the only sources. "
         "Return a grounded list of papers with titles, authors, years, and links. Do not invent titles, authors, or venues. "
@@ -47,6 +63,8 @@ def run_omnithesis_crew(topic: str, background: str = ""):
 
     time.sleep(15)
 
+    _emit_progress(progress_callback, "research", "completed", "Found candidate papers.")
+    _emit_progress(progress_callback, "domain", "running", "Summarizing the field and key ideas...")
     domain_description = (
         f"Analyze the research domain for '{topic}'. Explain what the field is, why it matters, who works on it, "
         "the core concepts a newcomer must understand, and the current research directions that are actively being explored. "
@@ -60,6 +78,8 @@ def run_omnithesis_crew(topic: str, background: str = ""):
 
     time.sleep(15)
 
+    _emit_progress(progress_callback, "domain", "completed", "Domain overview ready.")
+    _emit_progress(progress_callback, "curation", "running", "Ranking papers by relevance...")
     curation_description = (
         f"Curate the best papers for a report on '{topic}'. Review the research findings and select the most relevant, credible, "
         "and high-quality papers. Rank the papers, explain why each one belongs, and prefer papers that help build a solid academic narrative. "
@@ -73,6 +93,8 @@ def run_omnithesis_crew(topic: str, background: str = ""):
 
     time.sleep(15)
 
+    _emit_progress(progress_callback, "curation", "completed", "Paper list curated.")
+    _emit_progress(progress_callback, "feasibility", "running", "Assessing difficulty for the background provided...")
     feasibility_description = (
         f"Assess the feasibility of the research topic '{topic}' for a student with the following background: {background or 'not provided'}. "
         "Rate the topic as Easy, Medium, or Hard for this student and explain the skill gaps, what makes the topic demanding, "
@@ -90,6 +112,8 @@ def run_omnithesis_crew(topic: str, background: str = ""):
 
     time.sleep(15)
 
+    _emit_progress(progress_callback, "feasibility", "completed", "Feasibility assessment complete.")
+    _emit_progress(progress_callback, "writing", "running", "Drafting the full report in markdown...")
     writing_description = (
         f"Write a full structured markdown research report for '{topic}'. The report must synthesize the research findings, "
         "domain analysis, curated papers, and feasibility assessment into a coherent, student-friendly academic report. "
@@ -105,6 +129,8 @@ def run_omnithesis_crew(topic: str, background: str = ""):
 
     time.sleep(15)
 
+    _emit_progress(progress_callback, "writing", "completed", "Draft report assembled.")
+    _emit_progress(progress_callback, "editing", "running", "Polishing structure, clarity, and flow...")
     editing_description = (
         f"Edit the draft markdown report for '{topic}'. Improve clarity, structure, consistency, transitions, and presentation quality "
         "while preserving the meaning and factual content. Fix awkward phrasing, tighten repetitive passages, and make sure the final report reads like a polished capstone deliverable.\n\n"
@@ -114,5 +140,7 @@ def run_omnithesis_crew(topic: str, background: str = ""):
         "A polished markdown report with improved clarity and presentation quality."
     )
     final_output = _run_single_step(editor, editing_description, editing_expected)
+
+    _emit_progress(progress_callback, "editing", "completed", "Final report polished.")
 
     return final_output
