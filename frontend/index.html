@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F1729" />
+  <title>OmniThesis AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/frontend/style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <p class="eyebrow">OmniThesis AI</p>
+      <h1>Research discovery, analysis, and report writing in one workflow.</h1>
+      <p class="lede">
+        Enter a topic, add a little context about your background, and let six AI agents
+        assemble a grounded research report you can review and print.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel" aria-labelledby="form-title">
+        <div class="panel-header">
+          <h2 id="form-title">Build a research report</h2>
+          <p>Use your thesis topic or any research question you want to explore.</p>
+        </div>
+
+        <form id="report-form" class="report-form">
+          <label class="field field--large" for="research-topic">
+            <span class="field-label">Research topic</span>
+            <input
+              id="research-topic"
+              name="topic"
+              type="text"
+              placeholder="e.g. motion generation for human animation"
+              autocomplete="off"
+              required
+            />
+          </label>
+
+          <div class="field-grid">
+            <label class="field" for="python-skill">
+              <span class="field-label">Python skill level</span>
+              <select id="python-skill" name="python_skill_level">
+                <option value="">Select one</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </label>
+
+            <label class="field" for="ml-experience">
+              <span class="field-label">ML experience</span>
+              <select id="ml-experience" name="ml_experience">
+                <option value="">Select one</option>
+                <option value="none">None</option>
+                <option value="some">Some</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button id="generate-button" class="button button--primary" type="submit">
+              Generate Report
+            </button>
+            <p class="form-note">
+              The report will appear below as formatted HTML. You can print it as a PDF after it finishes.
+            </p>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel tracker-panel" aria-labelledby="tracker-title">
+        <div class="panel-header">
+          <h2 id="tracker-title">Agent progress</h2>
+          <p id="progress-timer" class="progress-timer">Elapsed 0:00 · Remaining about 0:00</p>
+          <p id="progress-message">Waiting for a topic.</p>
+        </div>
+
+        <ol id="progress-list" class="progress-list" aria-live="polite" aria-label="Agent execution progress">
+          <li class="progress-step" data-stage="research">
+            <span class="progress-step__mark" aria-hidden="true"></span>
+            <div class="progress-step__body">
+              <span class="progress-step__name">Research</span>
+              <span class="progress-step__status" data-status-for="research">Search ArXiv and Semantic Scholar.</span>
+              <span class="progress-step__detail">Search ArXiv and Semantic Scholar.</span>
+            </div>
+          </li>
+          <li class="progress-step" data-stage="domain">
+            <span class="progress-step__mark" aria-hidden="true"></span>
+            <div class="progress-step__body">
+              <span class="progress-step__name">Domain Analysis</span>
+              <span class="progress-step__status" data-status-for="domain">Summarize the field and key ideas.</span>
+              <span class="progress-step__detail">Summarize the field and key ideas.</span>
+            </div>
+          </li>
+          <li class="progress-step" data-stage="curation">
+            <span class="progress-step__mark" aria-hidden="true"></span>
+            <div class="progress-step__body">
+              <span class="progress-step__name">Curation</span>
+              <span class="progress-step__status" data-status-for="curation">Rank the strongest papers.</span>
+              <span class="progress-step__detail">Rank the strongest papers.</span>
+            </div>
+          </li>
+          <li class="progress-step" data-stage="feasibility">
+            <span class="progress-step__mark" aria-hidden="true"></span>
+            <div class="progress-step__body">
+              <span class="progress-step__name">Feasibility</span>
+              <span class="progress-step__status" data-status-for="feasibility">Assess difficulty for your background.</span>
+              <span class="progress-step__detail">Assess difficulty for your background.</span>
+            </div>
+          </li>
+          <li class="progress-step" data-stage="writing">
+            <span class="progress-step__mark" aria-hidden="true"></span>
+            <div class="progress-step__body">
+              <span class="progress-step__name">Writing</span>
+              <span class="progress-step__status" data-status-for="writing">Draft the full report in markdown.</span>
+              <span class="progress-step__detail">Draft the full report in markdown.</span>
+            </div>
+          </li>
+          <li class="progress-step" data-stage="editing">
+            <span class="progress-step__mark" aria-hidden="true"></span>
+            <div class="progress-step__body">
+              <span class="progress-step__name">Editing</span>
+              <span class="progress-step__status" data-status-for="editing">Polish structure, clarity, and flow.</span>
+              <span class="progress-step__detail">Polish structure, clarity, and flow.</span>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <section id="error-panel" class="panel error-panel is-hidden" role="alert" aria-live="assertive">
+        <h2>Pipeline error</h2>
+        <p id="error-message">The report could not be generated.</p>
+        <button id="retry-button" class="button button--secondary" type="button">Try Again</button>
+      </section>
+
+      <section id="report-panel" class="panel report-panel is-hidden" aria-labelledby="report-title">
+        <div class="report-panel__header">
+          <div>
+            <p class="report-kicker">Generated report</p>
+            <h2 id="report-title">Report output</h2>
+          </div>
+          <div class="report-panel__actions">
+            <button id="download-pdf" class="button button--secondary" type="button">Download as PDF</button>
+          </div>
+        </div>
+
+        <article id="report-output" class="report-output"></article>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="/frontend/app.js"></script>
+</body>
+</html>
