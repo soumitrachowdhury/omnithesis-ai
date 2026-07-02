@@ -109,7 +109,7 @@ def _run_job(job_id: str, payload: GenerateReportRequest):
         _update_job(job_id, status="failed", error=str(exc), message="The pipeline did not complete.")
 
 # MISTAKE #2 - MUST HAVE /health endpoint for Render free tier / UptimeRobot
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health_check():
     return {"status": "ok"}
 
