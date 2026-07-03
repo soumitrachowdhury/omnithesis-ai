@@ -1,2 +1,374 @@
-# omnithesis-ai
-A multi-agent AI research assistant that searches ArXiv and Semantic Scholar to generate structured academic research reports. Built with CrewAI, Groq (Llama 3.3 70B), FastAPI, and deployed on Render.
+<div align="center">
+
+# OmniThesis AI
+
+### Multi-Agent Academic Research Assistant
+
+**Six AI agents. One research topic. A complete structured report — in under 2 minutes.**
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-omnithesis--ai.onrender.com-4f86f7?style=for-the-badge&logo=render)](https://omnithesis-ai.onrender.com)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![CrewAI](https://img.shields.io/badge/CrewAI-Multi--Agent-FF6B6B?style=for-the-badge)](https://crewai.com/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey?style=for-the-badge)](LICENSE)
+
+---
+
+<!-- SCREENSHOT: Add a full-width screenshot of the OmniThesis AI homepage here -->
+<!-- Example: ![OmniThesis AI Homepage](docs/screenshots/homepage.png) -->
+> **📸 Screenshot placeholder — add your homepage screenshot here before submitting**
+
+---
+
+[🚀 Try the Live Demo](https://omnithesis-ai.onrender.com) · [📖 How It Works](#how-it-works) · [⚙️ Local Setup](#local-setup) · [🏗️ Architecture](#architecture)
+
+</div>
+
+---
+
+## What Is OmniThesis AI?
+
+OmniThesis AI is a **multi-agent AI research assistant** built as a capstone project for an AI & ML Engineering Bootcamp. You give it a research topic and a bit of background about yourself — it dispatches six specialized AI agents that search real academic databases, curate the best papers, assess how approachable the topic is for your skill level, and write a full structured research report.
+
+**The problem it solves:** Starting a literature review is one of the hardest parts of academic research. Most students spend days searching databases, reading abstracts, and trying to understand a new field before they can even frame a proper research question. OmniThesis AI compresses that process to under two minutes.
+
+> **No hallucination policy:** Papers are sourced exclusively from ArXiv and Semantic Scholar APIs. The LLM never invents titles, authors, or venues — it only analyzes papers the search tools actually return.
+
+---
+
+## Live Demo
+
+**🌐 [https://omnithesis-ai.onrender.com](https://omnithesis-ai.onrender.com)**
+
+> The app is hosted on Render's free tier. If it takes 10–15 seconds to respond on first load, the server is waking up from sleep — this is normal. Once awake, report generation takes approximately 90–120 seconds.
+
+---
+
+## Features
+
+- **Real paper discovery** — searches ArXiv and Semantic Scholar, not the LLM's memory
+- **Domain explanation** — explains what the field is, who works on it, and what the open problems are
+- **Intelligent curation** — ranks papers by relevance, credibility, and fit for the topic
+- **Personalised feasibility rating** — rates the topic Easy / Medium / Hard for your specific background and identifies your skill gaps
+- **Full structured report** — 8-section markdown report including Executive Summary, Research Trends, Top Papers, Learning Path, and Suggested Research Directions
+- **Live progress tracker** — watch each of the six agents work in real time
+- **PDF export** — download the finished report as a PDF directly from the browser, no extra software needed
+
+---
+
+## Report Sections
+
+Every generated report contains the following sections:
+
+1. Executive Summary
+2. Domain Overview
+3. Current Research Trends
+4. Top Research Papers *(with citations and links)*
+5. Feasibility Assessment *(personalised to your background)*
+6. Key Challenges
+7. Recommended Learning Path
+8. Suggested Research Directions
+
+---
+
+## How It Works
+
+OmniThesis AI runs six AI agents sequentially. Each agent has a single specialised role and passes its output to the next:
+
+```
+Your Input (topic + background)
+        │
+        ▼
+┌─────────────────────┐
+│  1. Research Scout  │  Searches ArXiv + Semantic Scholar
+│                     │  → Returns a list of real papers with links
+└─────────┬───────────┘
+          │ 15s pause (rate limit)
+          ▼
+┌─────────────────────┐
+│  2. Domain Analyst  │  Reads the papers, maps the field
+│                     │  → Returns field overview, concepts, trends
+└─────────┬───────────┘
+          │ 15s pause (rate limit)
+          ▼
+┌─────────────────────┐
+│  3. Paper Curator   │  Ranks and filters papers by quality
+│                     │  → Returns top 8–12 papers with justification
+└─────────┬───────────┘
+          │ 15s pause (rate limit)
+          ▼
+┌────────────────────────┐
+│  4. Feasibility Analyst│  Scores topic difficulty for your background
+│                        │  → Returns rating + skill gaps + advice
+└─────────┬──────────────┘
+          │ 15s pause (rate limit)
+          ▼
+┌─────────────────────┐
+│  5. Report Writer   │  Synthesises all outputs into a report draft
+│                     │  → Returns full 8-section markdown report
+└─────────┬───────────┘
+          │ 15s pause (rate limit)
+          ▼
+┌─────────────────────┐
+│  6. Editor          │  Polishes clarity, flow, and presentation
+│                     │  → Returns final, publication-ready report
+└─────────┬───────────┘
+          │
+          ▼
+   Rendered in browser → Download as PDF
+```
+
+The 15-second pauses between agents are intentional — they prevent hitting Groq's free-tier token-per-minute rate limits without reducing the quality of the agents' outputs.
+
+---
+
+## Demo Walkthrough
+
+<!-- SCREENSHOT: Add a screenshot of the report generation form here -->
+<!-- Example: ![Report Form](docs/screenshots/form.png) -->
+> **📸 Screenshot placeholder — add your form/input UI screenshot here**
+
+**Step 1 — Enter your topic and background**
+
+Open [https://omnithesis-ai.onrender.com](https://omnithesis-ai.onrender.com), type your research topic (e.g. *"skeleton-based human action prediction for human-robot collaboration"*), select your Python skill level and ML experience, then click **Generate Report**.
+
+---
+
+<!-- SCREENSHOT: Add a screenshot of the live agent progress tracker here -->
+<!-- Example: ![Progress Tracker](docs/screenshots/progress-tracker.png) -->
+> **📸 Screenshot placeholder — add your agent progress tracker screenshot here**
+
+**Step 2 — Watch the agents work**
+
+The progress tracker shows each of the six agents activating in sequence. The tracker updates live every few seconds. Total time is approximately 90–120 seconds.
+
+---
+
+<!-- SCREENSHOT: Add a screenshot of the finished rendered report here -->
+<!-- Example: ![Generated Report](docs/screenshots/report-output.png) -->
+> **📸 Screenshot placeholder — add a screenshot of the finished report here**
+
+**Step 3 — Read and download your report**
+
+The finished report is rendered as formatted HTML in the browser. Click **Download as PDF** to print it — the print stylesheet removes all navigation elements and produces a clean, readable PDF.
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| AI Agents | [CrewAI](https://crewai.com/) | Orchestrates the 6-agent sequential pipeline |
+| LLM | [Groq API](https://console.groq.com) — Llama 3.3 70B | Powers all agent reasoning and writing |
+| Paper Search | [ArXiv API](https://arxiv.org/help/api/) | Discovers real academic papers |
+| Paper Search | [Semantic Scholar API](https://www.semanticscholar.org/product/api) | Discovers real academic papers |
+| Backend | [FastAPI](https://fastapi.tiangolo.com/) (Python 3.11) | REST API, async background pipeline, status polling |
+| Frontend | Vanilla HTML + CSS + JS | Single self-contained file, no framework needed |
+| Report Rendering | [Marked.js](https://marked.js.org/) | Converts agent markdown output to formatted HTML |
+| PDF Export | Browser `window.print()` | Zero-dependency, Docker-safe PDF generation |
+| Containerisation | [Docker](https://www.docker.com/) | Reproducible builds, consistent deploys |
+| Hosting | [Render](https://render.com/) | Free-tier cloud hosting (Singapore region) |
+| Uptime Monitoring | [UptimeRobot](https://uptimerobot.com/) | Pings `/health` every 5 minutes to prevent Render sleep |
+
+---
+
+## Architecture
+
+### Request Flow
+
+When you click **Generate Report**, here is exactly what happens:
+
+```
+Browser                    FastAPI Backend              Background Thread
+   │                            │                              │
+   │  POST /generate-report     │                              │
+   │ ─────────────────────────► │                              │
+   │                            │  Creates a report task       │
+   │                            │  with a unique ID            │
+   │                            │ ────────────────────────────►│
+   │  { task_id, status_url }   │                              │  6 agents run
+   │ ◄───────────────────────── │                              │  sequentially
+   │                            │                              │  (~90-120 sec)
+   │  GET /report-status/{id}   │                              │
+   │ ─────────────────────────► │                              │
+   │  { stage, state, elapsed } │                              │
+   │ ◄───────────────────────── │                              │
+   │       (polls every 2s)     │                              │
+   │                            │  ◄───────────────────────────│
+   │                            │  Stage updates written       │
+   │  GET /report-status/{id}   │  to in-memory store          │
+   │ ─────────────────────────► │                              │
+   │  { status: "completed",    │                              │
+   │    report: "# Report..." } │                              │
+   │ ◄───────────────────────── │                              │
+   │                            │                              │
+   │  Renders report via        │                              │
+   │  Marked.js                 │                              │
+```
+
+**Why background tasks?** The 6-agent pipeline takes approximately 90–120 seconds. A standard HTTP request would time out in the browser long before it finished. The background task system returns a task ID immediately (HTTP 202), runs the pipeline on a separate thread, and lets the frontend poll for updates.
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Serves the frontend (index.html) |
+| `GET` | `/health` | Returns `{"status": "ok"}` — used by UptimeRobot |
+| `POST` | `/generate-report` | Starts the 6-agent pipeline, returns a task ID immediately |
+| `GET` | `/report-status/{task_id}` | Returns current stage, progress, and the finished report |
+
+### Project Structure
+
+```
+omnithesis-ai/
+├── backend/
+│   ├── agents/
+│   │   ├── domain_analyst.py
+│   │   ├── editor.py
+│   │   ├── feasibility_analyst.py
+│   │   ├── paper_curator.py
+│   │   ├── report_writer.py
+│   │   └── research_scout.py
+│   ├── tools/
+│   │   ├── arxiv_tool.py
+│   │   └── semantic_scholar_tool.py
+│   ├── crew.py
+│   ├── llm.py
+│   └── main.py
+├── frontend/
+│   ├── app.js
+│   ├── index.html
+│   └── style.css
+├── .dockerignore
+├── Dockerfile
+├── LICENSE
+├── README.md
+└── requirements.txt
+```
+
+---
+
+## Local Setup
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- A free [Groq API key](https://console.groq.com) *(takes 2 minutes to create)*
+- A [Semantic Scholar API key](https://www.semanticscholar.org/product/api) *(optional — the app works without one)*
+
+### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/soumitrachowdhury/omnithesis-ai.git
+cd omnithesis-ai
+
+# 2. Set up your environment variables
+cp .env.example .env
+# Open .env in any text editor and paste your GROQ_API_KEY
+```
+
+Your `.env` file should look like this:
+
+```env
+GROQ_API_KEY=gsk_your_key_here
+SEMANTIC_SCHOLAR_API_KEY=your_key_here   # optional
+```
+
+```bash
+# 3. Build the Docker image
+docker build -t omnithesis-ai .
+
+# 4. Run the container
+docker run -p 8000:8000 --env-file .env omnithesis-ai
+```
+
+```
+# 5. Open in your browser
+http://localhost:8000
+```
+
+> ⚠️ **Important:** Always run the container with `docker run --env-file .env`. Do not use the Docker Desktop "Run" button — it does not inject environment variables from your `.env` file, so the app will start but immediately fail when it tries to call Groq.
+
+---
+
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `GROQ_API_KEY` | **Yes** | Your Groq API key for Llama 3.3 70B |
+| `SEMANTIC_SCHOLAR_API_KEY` | No | Optional. Enables higher rate limits on Semantic Scholar searches |
+
+---
+
+## AI Model Details
+
+| Property | Value |
+|---|---|
+| Model | Llama 3.3 70B Versatile |
+| Provider | Groq |
+| Temperature | 0.1 (low — keeps outputs factual and consistent) |
+| Framework | CrewAI with a custom litellm compatibility patch |
+| Agent strategy | Sequential — each agent receives the full output of all previous agents |
+
+**Why Groq?** Groq provides extremely fast inference on Llama 3.3 70B at no cost on the free tier. The main constraint is a tokens-per-minute rate limit, which is handled by adding 15-second pauses between agent calls rather than reducing prompt length or output quality.
+
+**Why Llama 3.3 70B?** It produces coherent, well-structured long-form academic text with strong instruction-following — exactly what report writing requires.
+
+---
+
+## Assignment Checklist
+
+This project was built to satisfy the following capstone requirements:
+
+| Requirement | Status | How |
+|---|---|---|
+| Real-world problem | ✅ | Academic research discovery and report generation |
+| Frontend UI | ✅ | Responsive web interface with live agent progress tracker |
+| Backend API | ✅ | FastAPI with async background pipeline and polling endpoints |
+| AI/ML component | ✅ | 6-agent CrewAI pipeline powered by Llama 3.3 70B via Groq |
+| Git version control | ✅ | GitHub repository with descriptive commit history |
+| Deployment | ✅ | Live on Render at https://omnithesis-ai.onrender.com |
+| README | ✅ | This document |
+| AI methodology description | ✅ | See [AI Model Details](#ai-model-details) and [How It Works](#how-it-works) |
+| Usage instructions | ✅ | See [Demo Walkthrough](#demo-walkthrough) and [Local Setup](#local-setup) |
+
+---
+
+## Planned Improvements
+
+These features were intentionally left out of the initial version to meet the project deadline. They represent the natural next steps for making OmniThesis AI more production-ready:
+
+| Feature | Description |
+|---|---|
+| Improved UI/UX | The current interface is functional but minimal. A redesigned UI with better typography, paper cards, and a cleaner report viewer would significantly improve the user experience |
+| Bring your own API key | Allow users to paste their own Groq key in the UI so the app is not tied to a single shared quota |
+| Persistent report history | Currently, reports disappear when the server restarts because they are stored in memory. A database (SQLite or PostgreSQL) would give users a history of past reports |
+| User accounts | Let users save, name, and revisit their generated reports |
+| Real-time streaming progress | Replace the current polling approach with WebSockets or Server-Sent Events for smoother live updates |
+| Report cancellation | Allow users to stop a generation mid-way instead of waiting for it to finish or time out |
+| More paper sources | Add Google Scholar, PubMed, or IEEE Xplore as additional search sources |
+| Citation export | Let users download the paper list as a BibTeX or RIS file for use in reference managers |
+
+---
+
+## License
+
+This project is licensed under [CC BY-NC-ND 4.0](LICENSE).
+
+You are free to share and reference this work for non-commercial purposes with attribution. You may not modify it or use it commercially.
+
+---
+
+## Author
+
+**Soumitra Chowdhury**
+
+---
+
+<div align="center">
+
+Built with CrewAI · Groq · FastAPI · Docker · Render
+
+</div>
