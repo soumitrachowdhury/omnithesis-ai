@@ -2,10 +2,9 @@ import os
 import litellm
 from crewai import LLM
 
-# --- FIX for CrewAI + Groq compatibility ---
-# CrewAI injects 'cache_breakpoint' into system messages for Anthropic prompt caching.
-# It does this for ALL providers, but Groq rejects it with a 400 Bad Request.
-# We intercept litellm.completion and strip that field before the request reaches Groq.
+''' Patch litellm.completion to remove CrewAI's 
+Anthropic cache_breakpoint field before sending requests to Groq. '''
+
 _original_completion = litellm.completion
 
 def _patched_completion(*args, **kwargs):

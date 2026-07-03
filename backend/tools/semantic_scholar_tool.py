@@ -11,7 +11,7 @@ def search_semantic_scholar(query: str) -> str:
     """
     url = "https://api.semanticscholar.org/graph/v1/paper/search"
     
-    # MISTAKE #6: Handle optional API key so development isn't blocked
+    # Works without a "SEMANTIC_SCHOLAR_API_KEY" API key
     headers = {}
     if os.getenv("SEMANTIC_SCHOLAR_API_KEY"):
         headers["x-api-key"] = os.getenv("SEMANTIC_SCHOLAR_API_KEY")
