@@ -15,9 +15,7 @@
 
 ---
 
-<!-- SCREENSHOT: Add a full-width screenshot of the OmniThesis AI homepage here -->
-<!-- Example: ![OmniThesis AI Homepage](docs/screenshots/homepage.png) -->
-> **📸 Screenshot placeholder — add your homepage screenshot here before submitting**
+<img width="1366" height="1812" alt="OmniThesis AI UI" src="https://github.com/user-attachments/assets/39f7fd07-f6f4-4692-957a-8eeebee87c20" />
 
 ---
 
@@ -125,9 +123,7 @@ The 15-second pauses between agents are intentional — they prevent hitting Gro
 
 ## Demo Walkthrough
 
-<!-- SCREENSHOT: Add a screenshot of the report generation form here -->
-<!-- Example: ![Report Form](docs/screenshots/form.png) -->
-> **📸 Screenshot placeholder — add your form/input UI screenshot here**
+<img width="827" height="592" alt="Report Form" src="https://github.com/user-attachments/assets/c55c1eb7-07b3-41d8-bdd5-737257bb9027" />
 
 **Step 1 — Enter your topic and background**
 
@@ -135,9 +131,7 @@ Open [https://omnithesis-ai.onrender.com](https://omnithesis-ai.onrender.com), t
 
 ---
 
-<!-- SCREENSHOT: Add a screenshot of the live agent progress tracker here -->
-<!-- Example: ![Progress Tracker](docs/screenshots/progress-tracker.png) -->
-> **📸 Screenshot placeholder — add your agent progress tracker screenshot here**
+<img width="711" height="493" alt="Progress Tracker" src="https://github.com/user-attachments/assets/f8f8b3b8-1522-4e32-9995-574e650b4bfc" />
 
 **Step 2 — Watch the agents work**
 
@@ -145,9 +139,7 @@ The progress tracker shows each of the six agents activating in sequence. The tr
 
 ---
 
-<!-- SCREENSHOT: Add a screenshot of the finished rendered report here -->
-<!-- Example: ![Generated Report](docs/screenshots/report-output.png) -->
-> **📸 Screenshot placeholder — add a screenshot of the finished report here**
+<img width="679" height="595" alt="Generated Report" src="https://github.com/user-attachments/assets/d530e02d-a250-421a-9fee-572d94b089c6" />
 
 **Step 3 — Read and download your report**
 
