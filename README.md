@@ -310,24 +310,6 @@ http://localhost:8000
 
 ---
 
-## Assignment Checklist
-
-This project was built to satisfy the following capstone requirements:
-
-| Requirement | Status | How |
-|---|---|---|
-| Real-world problem | ✅ | Academic research discovery and report generation |
-| Frontend UI | ✅ | Responsive web interface with live agent progress tracker |
-| Backend API | ✅ | FastAPI with async background pipeline and polling endpoints |
-| AI/ML component | ✅ | 6-agent CrewAI pipeline powered by Llama 3.3 70B via Groq |
-| Git version control | ✅ | GitHub repository with descriptive commit history |
-| Deployment | ✅ | Live on Render at https://omnithesis-ai.onrender.com |
-| README | ✅ | This document |
-| AI methodology description | ✅ | See [AI Model Details](#ai-model-details) and [How It Works](#how-it-works) |
-| Usage instructions | ✅ | See [Demo Walkthrough](#demo-walkthrough) and [Local Setup](#local-setup) |
-
----
-
 ## Planned Improvements
 
 These features were intentionally left out of the initial version to meet the project deadline. They represent the natural next steps for making OmniThesis AI more production-ready:
