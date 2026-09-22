@@ -10,6 +10,19 @@ from agents.paper_curator import create_paper_curator
 from agents.report_writer import create_report_writer
 from agents.research_scout import create_research_scout
 
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
+
+def _is_rate_limit_error(exception: BaseException) -> bool:
+    """True if the failure looks like a Groq/LiteLLM rate-limit error."""
+    message = str(exception).lower()
+    return "rate limit" in message or "ratelimiterror" in message
+
+@retry(
+    retry=retry_if_exception(_is_rate_limit_error),
+    wait=wait_exponential(multiplier=2, min=2, max=60),
+    stop=stop_after_attempt(5),
+    reraise=True,
+)
 
 def _run_single_step(agent, description: str, expected_output: str):
     task = Task(
