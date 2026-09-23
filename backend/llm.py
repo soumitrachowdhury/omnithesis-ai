@@ -19,7 +19,7 @@ litellm.completion = _patched_completion
 
 def get_groq_llm():
     return LLM(
-        model="groq/qwen/qwen3-32b",
+        model="groq/qwen/qwen3.8-27b",
         api_key=os.getenv("GROQ_API_KEY"),
         temperature=0.1
     )
