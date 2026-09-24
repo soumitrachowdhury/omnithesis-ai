@@ -97,7 +97,7 @@ def run_omnithesis_crew(
         f"Curate the best papers for a report on '{topic}'. Review the research findings and select the most relevant, credible, "
         "and high-quality papers. Rank the papers, explain why each one belongs, and prefer papers that help build a solid academic narrative. "
         "Reject weak or tangential papers. The output should support a rigorous report, not a generic summary.\n\n"
-        f"Research findings:\n{research_output}\n\nDomain analysis:\n{domain_output}"
+        f"Research findings:\n{research_output}"
     )
     curation_expected = (
         "A markdown list of curated papers with short justification for each selection."
@@ -133,7 +133,7 @@ def run_omnithesis_crew(
         "Include the following sections: Executive Summary, Domain Overview, Current Research Trends, Top Research Papers, "
         "Feasibility Assessment, Key Challenges, Recommended Learning Path, and Suggested Research Directions. "
         "Use clear headings, polished academic language, and readable markdown formatting.\n\n"
-        f"Research findings:\n{research_output}\n\nDomain analysis:\n{domain_output}\n\nCurated papers:\n{curation_output}\n\nFeasibility assessment:\n{feasibility_output}"
+        f"Domain analysis:\n{domain_output}\n\nCurated papers:\n{curation_output}\n\nFeasibility assessment:\n{feasibility_output}"
     )
     writing_expected = (
         "A structured markdown report ready for review and presentation."
