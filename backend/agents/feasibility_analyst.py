@@ -1,6 +1,6 @@
 from crewai import Agent
 
-from llm import get_groq_llm
+from llm import get_gemini_llm
 
 
 def create_feasibility_analyst():
@@ -8,7 +8,7 @@ def create_feasibility_analyst():
     Creates the Feasibility Analyst Agent.
     Its job is to assess how difficult the topic is for the user's background.
     """
-    llm = get_groq_llm()
+    llm = get_gemini_llm()
 
     return Agent(
         role='Feasibility Analyst',

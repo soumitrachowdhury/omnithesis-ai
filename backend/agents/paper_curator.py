@@ -1,6 +1,6 @@
 from crewai import Agent
 
-from llm import get_groq_llm
+from llm import get_gemini_llm
 
 
 def create_paper_curator():
@@ -8,7 +8,7 @@ def create_paper_curator():
     Creates the Paper Curator Agent.
     Its job is to filter, rank, and validate the strongest papers for the report.
     """
-    llm = get_groq_llm()
+    llm = get_gemini_llm()
 
     return Agent(
         role='Paper Curator',

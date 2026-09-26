@@ -1,14 +1,15 @@
 from crewai import Agent
 from tools.arxiv_tool import search_arxiv
 from tools.semantic_scholar_tool import search_semantic_scholar
-from llm import get_groq_llm
+
+from llm import get_gemini_llm
 
 def create_research_scout():
     """
     Creates the Research Scout Agent for Day 2.
     Its job is to search ArXiv and Semantic Scholar for real academic papers.
     """
-    llm = get_groq_llm()
+    llm = get_gemini_llm()
     
     return Agent(
         role='Research Scout',

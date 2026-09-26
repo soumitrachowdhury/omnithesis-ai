@@ -12,13 +12,27 @@ from agents.research_scout import create_research_scout
 
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
-def _is_rate_limit_error(exception: BaseException) -> bool:
-    """True if the failure looks like a Groq/LiteLLM rate-limit error."""
+def _is_transient_error(exception: BaseException) -> bool:
+    """True if the failure is a temporary API error (Rate Limit, Server Overload, Timeout)."""
+    
+    # Check standard temporary HTTP status codes
+    status_code = getattr(exception, "status_code", None)
+    if status_code in (429, 500, 502, 503, 504):
+        return True
+        
+    # Check the error type for network drops
+    exc_name = type(exception).__name__.lower()
+    transient_types = ["ratelimit", "timeout", "unavailable", "connection", "servererror"]
+    if any(t in exc_name for t in transient_types):
+        return True
+        
+    # Fallback: Catch string-based error messages like "high demand"
     message = str(exception).lower()
-    return "rate limit" in message or "ratelimiterror" in message
+    transient_phrases = ["rate limit", "429", "503", "500", "502", "504", "high demand", "unavailable", "timeout"]
+    return any(phrase in message for phrase in transient_phrases)
 
 @retry(
-    retry=retry_if_exception(_is_rate_limit_error),
+    retry=retry_if_exception(_is_transient_error),
     wait=wait_exponential(multiplier=2, min=2, max=60),
     stop=stop_after_attempt(5),
     reraise=True,
@@ -36,6 +50,7 @@ def _run_single_step(agent, description: str, expected_output: str):
         tasks=[task],
         process=Process.sequential,
         verbose=True,
+        max_rpm=10  # under Gemini 3.1 Flash Lite's 15 RPM cap
     )
 
     return crew.kickoff()

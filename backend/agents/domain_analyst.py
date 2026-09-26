@@ -1,14 +1,13 @@
 from crewai import Agent
 
-from llm import get_groq_llm
-
+from llm import get_gemini_llm
 
 def create_domain_analyst():
     """
     Creates the Domain Analyst Agent.
     Its job is to explain the research field, core concepts, and current directions.
     """
-    llm = get_groq_llm()
+    llm = get_gemini_llm()
 
     return Agent(
         role='Domain Analyst',

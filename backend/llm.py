@@ -3,7 +3,7 @@ import litellm
 from crewai import LLM
 
 ''' Patch litellm.completion to remove CrewAI's 
-Anthropic cache_breakpoint field before sending requests to Groq. '''
+Anthropic cache_breakpoint field before sending requests to Gemini. '''
 
 _original_completion = litellm.completion
 
@@ -17,9 +17,9 @@ def _patched_completion(*args, **kwargs):
 litellm.completion = _patched_completion
 # -------------------------------------------
 
-def get_groq_llm():
+def get_gemini_llm():
     return LLM(
-        model="groq/qwen/qwen3.8-27b",
-        api_key=os.getenv("GROQ_API_KEY"),
+        model="gemini/gemini-3.1-flash-lite",
+        api_key=os.getenv("GEMINI_API_KEY"),
         temperature=0.1
     )

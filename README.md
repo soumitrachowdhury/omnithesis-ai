@@ -27,7 +27,7 @@
 
 ## What Is OmniThesis AI?
 
-OmniThesis AI is a **multi-agent AI research assistant** built as a capstone project for an AI & ML Engineering Bootcamp. You give it a research topic and a bit of background about yourself — it dispatches six specialized AI agents that search real academic databases, curate the best papers, assess how approachable the topic is for your skill level, and write a full structured research report.
+OmniThesis AI is a **multi-agent AI research assistant** designed to help students and early-stage researchers navigate unfamiliar research topics, explore relevant literature, assess feasibility, and identify practical directions for further investigation. You give it a research topic and a bit of background about yourself — it dispatches six specialized AI agents that search real academic databases, curate the best papers, assess how approachable the topic is for your skill level, and write a full structured research report.
 
 **The problem it solves:** Starting a literature review is one of the hardest parts of academic research. Most students spend days searching databases, reading abstracts, and trying to understand a new field before they can even frame a proper research question. OmniThesis AI compresses that process to under two minutes.
 
@@ -117,7 +117,7 @@ Your Input (topic + background)
    Rendered in browser → Download as PDF
 ```
 
-The 15-second pauses between agents are intentional — they prevent hitting Groq's free-tier token-per-minute rate limits without reducing the quality of the agents' outputs.
+The 15-second pauses between agents are intentional — they prevent hitting the LLM provider's free-tier rate limits without reducing the quality of the agents' outputs. Every agent call is also wrapped in automatic retry-with-backoff, so a transient rate-limit or server error (HTTP 429/500/502/503/504) is retried instead of failing the whole run.
 
 ---
 
@@ -152,7 +152,7 @@ The finished report is rendered as formatted HTML in the browser. Click **Downlo
 | Layer | Technology | Purpose |
 |---|---|---|
 | AI Agents | [CrewAI](https://crewai.com/) | Orchestrates the 6-agent sequential pipeline |
-| LLM | [Groq API](https://console.groq.com) — Llama 3.3 70B | Powers all agent reasoning and writing |
+| LLM | [Google Gemini API](https://aistudio.google.com/) — Gemini 3.1 Flash-Lite | Powers all agent reasoning and writing |
 | Paper Search | [ArXiv API](https://arxiv.org/help/api/) | Discovers real academic papers |
 | Paper Search | [Semantic Scholar API](https://www.semanticscholar.org/product/api) | Discovers real academic papers |
 | Backend | [FastAPI](https://fastapi.tiangolo.com/) (Python 3.11) | REST API, async background pipeline, status polling |
@@ -246,7 +246,7 @@ omnithesis-ai/
 ### Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
-- A free [Groq API key](https://console.groq.com) *(takes 2 minutes to create)*
+- A free [Google Gemini API key](https://aistudio.google.com/) *(takes 2 minutes to create)*
 - A [Semantic Scholar API key](https://www.semanticscholar.org/product/api) *(optional — the app works without one)*
 
 ### Steps
@@ -258,13 +258,13 @@ cd omnithesis-ai
 
 # 2. Set up your environment variables
 cp .env.example .env
-# Open .env in any text editor and paste your GROQ_API_KEY
+# Open .env in any text editor and paste your GEMINI_API_KEY
 ```
 
 Your `.env` file should look like this:
 
 ```env
-GROQ_API_KEY=gsk_your_key_here
+GEMINI_API_KEY=your_gemini_key_here
 SEMANTIC_SCHOLAR_API_KEY=your_key_here   # optional
 ```
 
@@ -281,7 +281,7 @@ docker run -p 8000:8000 --env-file .env omnithesis-ai
 http://localhost:8000
 ```
 
-> ⚠️ **Important:** Always run the container with `docker run --env-file .env`. Do not use the Docker Desktop "Run" button — it does not inject environment variables from your `.env` file, so the app will start but immediately fail when it tries to call Groq.
+> ⚠️ **Important:** Always run the container with `docker run --env-file .env`. Do not use the Docker Desktop "Run" button — it does not inject environment variables from your `.env` file, so the app will start but immediately fail when it tries to call the Gemini API.
 
 ---
 
@@ -289,7 +289,7 @@ http://localhost:8000
 
 | Variable | Required | Description |
 |---|---|---|
-| `GROQ_API_KEY` | **Yes** | Your Groq API key for Llama 3.3 70B |
+| `GEMINI_API_KEY` | **Yes** | Your Google Gemini API key for Gemini 3.1 Flash-Lite |
 | `SEMANTIC_SCHOLAR_API_KEY` | No | Optional. Enables higher rate limits on Semantic Scholar searches |
 
 ---
@@ -298,15 +298,15 @@ http://localhost:8000
 
 | Property | Value |
 |---|---|
-| Model | Llama 3.3 70B Versatile |
-| Provider | Groq |
+| Model | Gemini 3.1 Flash-Lite |
+| Provider | Google (Gemini API) |
 | Temperature | 0.1 (low — keeps outputs factual and consistent) |
 | Framework | CrewAI with a custom litellm compatibility patch |
 | Agent strategy | Sequential — each agent receives the full output of all previous agents |
 
-**Why Groq?** Groq provides extremely fast inference on Llama 3.3 70B at no cost on the free tier. The main constraint is a tokens-per-minute rate limit, which is handled by adding 15-second pauses between agent calls rather than reducing prompt length or output quality.
+**Why Gemini?** The project originally ran on Groq's `llama-3.3-70b-versatile`, but Groq deprecated that model in August 2026. The pipeline was migrated to Google's Gemini API, which offers a free tier with a noticeably higher rate-limit ceiling than Groq's. That headroom is used alongside — not instead of — the existing safeguards: a `max_rpm` cap on the CrewAI crew, the 15-second pauses between agent calls, and automatic retry-with-backoff on rate-limit/server errors.
 
-**Why Llama 3.3 70B?** It produces coherent, well-structured long-form academic text with strong instruction-following — exactly what report writing requires.
+**Why Gemini 3.1 Flash-Lite?** It's a fast, low-cost model in Gemini's Flash-Lite tier with solid instruction-following for long-form structured writing, and it's available on Gemini's free tier — a good fit for report generation without added cost.
 
 ---
 
@@ -317,7 +317,7 @@ These features were intentionally left out of the initial version to meet the pr
 | Feature | Description |
 |---|---|
 | Improved UI/UX | The current interface is functional but minimal. A redesigned UI with better typography, paper cards, and a cleaner report viewer would significantly improve the user experience |
-| Bring your own API key | Allow users to paste their own Groq key in the UI so the app is not tied to a single shared quota |
+| Bring your own API key | Allow users to paste their own Gemini key in the UI so the app is not tied to a single shared quota |
 | Persistent report history | Currently, reports disappear when the server restarts because they are stored in memory. A database (SQLite or PostgreSQL) would give users a history of past reports |
 | User accounts | Let users save, name, and revisit their generated reports |
 | Real-time streaming progress | Replace the current polling approach with WebSockets or Server-Sent Events for smoother live updates |
@@ -343,6 +343,6 @@ You are free to share and reference this work for non-commercial purposes with a
 
 <div align="center">
 
-Built with CrewAI · Groq · FastAPI · Docker · Render
+Built with CrewAI · Gemini · FastAPI · Docker · Render
 
 </div>

@@ -1,6 +1,6 @@
 from crewai import Agent
 
-from llm import get_groq_llm
+from llm import get_gemini_llm
 
 
 def create_report_writer():
@@ -8,7 +8,7 @@ def create_report_writer():
     Creates the Report Writer Agent.
     Its job is to compile the research findings into a structured markdown report.
     """
-    llm = get_groq_llm()
+    llm = get_gemini_llm()
 
     return Agent(
         role='Report Writer',

@@ -1,14 +1,13 @@
 from crewai import Agent
 
-from llm import get_groq_llm
-
+from llm import get_gemini_llm
 
 def create_editor():
     """
     Creates the Editor Agent.
     Its job is to review the draft report and improve clarity, consistency, and polish.
     """
-    llm = get_groq_llm()
+    llm = get_gemini_llm()
 
     return Agent(
         role='Editor',
